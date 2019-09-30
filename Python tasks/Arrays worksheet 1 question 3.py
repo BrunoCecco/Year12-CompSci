@@ -13,5 +13,12 @@ for i in range(0, 3):
     print(total)
     total = 0
 
+for x in range(3):
+	for y in range(4):
+		total = total + outlet[x][y]
+	print(str(x+1))
+	print(str(total))
+total = 0
+
         
         
