@@ -56,7 +56,7 @@ def _init_():
 def paddle_hit(paddle): 
     global x_direction, x_val, y_val
     if (y_val < paddle + padd_width + (ball_width-1) and y_val > paddle - (ball_width-1)) and (x_val <= padd_length or x_val >= size[0] - (ball_width + padd_length)):
-        x_direction = x_direction
+        x_direction = x_direction*-1
         hit_sound.play()
 
 def paddle_miss():
@@ -97,6 +97,7 @@ while not done:
     paddle_hit(y_padd)
     paddle_hit(y_padd_2)
     #checks if ball hits right and left hand side paddles
+    paddle_miss()
     paddle_miss()
     #checks if paddle has missed the paddles
     
@@ -155,3 +156,4 @@ while not done:
     clock.tick(100)
 
 pygame.quit()
+
