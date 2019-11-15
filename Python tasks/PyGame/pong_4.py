@@ -56,7 +56,7 @@ def _init_():
 def paddle_hit(paddle): 
     global x_direction, x_val, y_val
     if (y_val < paddle + padd_width + (ball_width-1) and y_val > paddle - (ball_width-1)) and (x_val <= padd_length or x_val >= size[0] - (ball_width + padd_length)):
-        x_direction = x_direction*-1
+        x_direction = x_direction*-2
         hit_sound.play()
 
 def paddle_miss():
