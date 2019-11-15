@@ -67,7 +67,7 @@ class Bullet(pygame.sprite.Sprite):
         self.image.fill(color)
         self.rect = self.image.get_rect()
         self.rect.x = player.rect.x
-        self.rect.y = size[1]-height
+        self.rect.y = player.rect.y
         self.speed = 2
 
     def update(self):
@@ -77,13 +77,13 @@ class Bullet(pygame.sprite.Sprite):
 all_sprites_group = pygame.sprite.Group()
 invader_group = pygame.sprite.Group()
 bullet_group = pygame.sprite.Group()
-
+#bullet = Bullet(ORANGE, 2, 5, 5)
+#bullet_group.add(bullet)
+#all_sprites_group.add(bullet)
 player = Player(YELLOW, 20, 20)
-bullet = Bullet(ORANGE, 2, 10, 10)
+#bullet = Bullet(ORANGE, 2, 10, 10)
 
-bullet_group.add(bullet)
 all_sprites_group.add(player)
-all_sprites_group.add(bullet)
 
 # Create the snowflakes
 number_of_invaders = 10 # we are creating 50 snowflakes
@@ -110,8 +110,10 @@ while not done:
                 player.player_set_speed(0) # speed set to 0
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
-                bullet = Bullet(ORANGE, 2, 2, 2) 
-    bullet_hit_group = pygame.sprite.spritecollide(bullet, invader_group, True)
+                bullet = Bullet(ORANGE, 2, 5, 5)
+                bullet_group.add(bullet)
+                all_sprites_group.add(bullet)
+                bullet_hit_group = pygame.sprite.spritecollide(bullet, invader_group, True)
         # -- Game logic goes in here
     all_sprites_group.update()
     # -- Screen background is BLACK
