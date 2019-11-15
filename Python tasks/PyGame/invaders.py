@@ -35,6 +35,10 @@ class Player(pygame.sprite.Sprite):
         
     def update(self):
         self.rect.x = self.rect.x + self.speed
+        if self.rect.x >= size[0]:
+            self.rect.x = 0
+        elif self.rect.x <= 0:
+            self.rect.x = 0
 
     bullet_count = 50
 
@@ -77,11 +81,11 @@ class Bullet(pygame.sprite.Sprite):
 all_sprites_group = pygame.sprite.Group()
 invader_group = pygame.sprite.Group()
 bullet_group = pygame.sprite.Group()
-#bullet = Bullet(ORANGE, 2, 5, 5)
-#bullet_group.add(bullet)
-#all_sprites_group.add(bullet)
 player = Player(YELLOW, 20, 20)
-#bullet = Bullet(ORANGE, 2, 10, 10)
+bullet = Bullet(ORANGE, 2, 5, 5)
+bullet_group.add(bullet)
+all_sprites_group.add(bullet)
+
 
 all_sprites_group.add(player)
 
@@ -100,20 +104,21 @@ while not done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
-        elif event.type == pygame.KEYDOWN: # - a key is down
-            if event.key == pygame.K_LEFT: # - if the left key pressed
-                player.player_set_speed(-3) # speed set to -3
-            elif event.key == pygame.K_RIGHT: # - if the right key pressed
-                player.player_set_speed(3) # speed set to 3
-        elif event.type == pygame.KEYUP: # - a key released
-            if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
-                player.player_set_speed(0) # speed set to 0
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP:
-                bullet = Bullet(ORANGE, 2, 5, 5)
-                bullet_group.add(bullet)
-                all_sprites_group.add(bullet)
-                bullet_hit_group = pygame.sprite.spritecollide(bullet, invader_group, True)
+
+    if event.type == pygame.KEYDOWN: # - a key is down
+        if event.key == pygame.K_LEFT: # - if the left key pressed
+            player.player_set_speed(-3) # speed set to -3
+        elif event.key == pygame.K_RIGHT: # - if the right key pressed
+            player.player_set_speed(3) # speed set to 3
+    if event.type == pygame.K_LEFT or event.type == pygame.K_RIGHT:
+        player.player_set_speed(0) # speed set to 0
+
+    if event.type == pygame.KEYDOWN:
+        if event.key == pygame.K_UP:
+            bullet = Bullet(ORANGE, 2, 5, 5)
+            bullet_group.add(bullet)
+            all_sprites_group.add(bullet)
+    bullet_hit_group = pygame.sprite.spritecollide(bullet, invader_group, True)
         # -- Game logic goes in here
     all_sprites_group.update()
     # -- Screen background is BLACK
