@@ -1,13 +1,14 @@
 # Import libraries
-import pygame, math, random
+import pygame
+import math
+import random
 
 # Define colours
 RED = (255,0,0)
 GREEN = (0,255,0)
 BLUE = (0,0,255)
 BLACK = (0,0,0)
-WHITE = (255,255,255)
-PINK = (255,20,147)
+YELLOW = (255, 255, 0)
 
 # Initialize Pygame
 pygame.init()
@@ -15,9 +16,6 @@ pygame.init()
 # Set the height and width of the screen
 screen_width = 700
 screen_height = 400
-screen_1_height = 100
-screen_1_width = 100
-subsurface = pygame.display.set_mode([screen_1_width, screen_1_height])
 screen = pygame.display.set_mode([screen_width, screen_height])
 
 # Used to manage how fast the screen updates
@@ -26,58 +24,58 @@ clock = pygame.time.Clock()
 # Define the class Ball
 class Ball():
     # Constructor function to define initial state of a ball object
-    def __init__(self, x, y, col, x_speed, y_speed):
+    def __init__(self, x, y, col, x_speed, y_speed, ballarea):
         # --- Class Attributes ---
         # Ball position
         self.x = x
         self.y = y
+        self.court = ballarea
 
         # Ball's vector
         self.change_x = x_speed
         self.change_y = y_speed
 
         # Ball Size
-        self.size = random.randrange(5, 15)
+        self.size = 10
 
         # Ball colour
         self.color = col
+    #end proc
 
     # -- Class Methods ---
     # Defines the ball's movement
     def move(self):
-        self.x += self.change_x
-        self.y += self.change_y
-        if self.x >= screen_width - self.size:
+        if self.x <= (self.court[0] + self.size) or self.x >= (self.court[2] - self.size):
             self.change_x *= -1
-        elif self.x <= 0 + self.size:
-            self.change_x *= -1
-        elif self.y >= screen_height - self.size:
-            self.change_y *= -1
-        elif self.y <= 0 + self.size:
+        #end if
+
+        if self.y <= (self.court[1] + self.size) or self.y >= (self.court[3] - self.size):
             self.change_y *= -1
         #end if
-    #end def
 
+        self.x += self.change_x
+        self.y += self.change_y
+        #end if
+    #end proc
+        
     # Draws the ball on the screen
     def draw(self, screen):
         pygame.draw.circle(screen, self.color, [self.x, self.y], self.size)
-    #end def
+    #end proc
+#end class
 
 # Set game loop to false so it runs
 done = False
 
 # Create an object using the ball class
-ball_list = []
-colour_list = [RED, BLUE, GREEN, WHITE, PINK]
-for count in range(0, 20):
-    xrand = random.randrange(0, screen_width - 10)
-    yrand = random.randrange(0, screen_height - 10)
-    x_speedrand = random.randrange(1, 10)
-    y_speedrand = random.randrange(1, 10)
-    colour = random.choice(colour_list)
-    theBall = Ball(xrand, yrand, colour, x_speedrand, y_speedrand)
-    ball_list.append(theBall)
-#next count
+theBallarea = (0,0,300,200)
+theBallarea2 = (200,200,500,300)
+theBallarea3 = (350,350,700,400)
+
+theBall = Ball(20,20, RED, 3, 3, theBallarea) 
+theBall_2 = Ball(240,250, BLUE, 3, 3, theBallarea2)
+theBall_3 = Ball(370,370, YELLOW, 3, 3, theBallarea3)
+
 # Game loop
 while not(done):
     for event in pygame.event.get():
@@ -85,18 +83,23 @@ while not(done):
             done = True
         #End If
     #Next event
+
     # Clear the screen
     screen.fill(BLACK)
+
     # Draw the ball on the screen and then move it on
-    for theBall in ball_list:
-        theBall.draw(screen)
-        theBall.move()
-    #next
+    theBall.draw(screen)
+    theBall.move()
+    theBall_2.draw(screen)
+    theBall_2.move()
+    theBall_3.draw(screen)
+    theBall_3.move()
+
     # Limit to 60 FPS
     clock.tick(60)
 
     # Go ahead and update the screen with what we've drawn
     pygame.display.flip()
-    
 #End While
+
 pygame.quit()
