@@ -55,29 +55,27 @@ class Player(pygame.sprite.Sprite):
             self.rect.x = 0
 
     def decrease_bullets(self):
-        if self.bullet_count> 0:
+        if self.bullet_count > 0:
             self.bullet_count -= 1
 
 
 ## -- Define the class invaders which is a sprite
 class Invader(pygame.sprite.Sprite):
     # Define the constructor for invaders
-    def __init__(self, color, width, height, speed):
-        
+    def __init__(self, width, height, speed, filename):
         # Call the sprite constructor
         super().__init__()
         # Create a sprite and fill it with colour
-        self.image = pygame.Surface([width,height])
-        self.image.fill(color)
-        # Set the position of the sprite
+        #self.image = pygame.Surface([width,height])
+        self.image = pygame.image.load(filename)
         self.rect = self.image.get_rect()
         self.rect.x = random.randrange(0, 600)
         self.rect.y = random.randrange(-100, 0)
-        self.rect.topleft = self.rect.x, self.rect.y
+        # Set the position of the sprite
         self.width = width
         self.height = height
         self.speed = speed
-        
+
     def update(self):
         self.rect.y = self.rect.y + self.speed
         if self.rect.y >= size[1]:
@@ -92,7 +90,6 @@ class Bullet(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = player.rect.x
         self.rect.y = player.rect.y
-        self.rect.topleft = self.rect.x, self.rect.y
         self.width = width
         self.height = height
         self.speed = 1
@@ -102,21 +99,50 @@ class Bullet(pygame.sprite.Sprite):
         if self.rect.y < 0:
             bullet_group.remove(self)
 
+class Barrier(pygame.sprite.Sprite):
+    def __init__(self, color, width, height, x, y):
+        super().__init__()
+        self.image = pygame.Surface([width, height])
+        self.image.fill(color)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.width = width
+        self.height = height
+        self.speed = 0
 
+
+def new_invader_group(invader, num_invaders, sprite_group, invader_group, invader_image):
+    for x in range (num_invaders):
+        invader = Invader(20, 20, 1, invader_image)      
+        invader_group.add(invader)
+        sprite_group.add(invader)
+    #Next x
+
+    
 all_sprites_group = pygame.sprite.Group()
 invader_group = pygame.sprite.Group()
+#invader_group_2 = pygame.sprite.Group()
 bullet_group = pygame.sprite.Group()
+barrier_group = pygame.sprite.Group()
 
+
+# create barriers
+num_barriers = 7
+x = 0
+for b in range(num_barriers):
+    barrier = Barrier(BLUE, 40, 40, x, 300)
+    barrier_group.add(barrier)
+    all_sprites_group.add(barrier)
+    x += 100
+
+# create player 
 player = Player(YELLOW, 10, 10)
 all_sprites_group.add(player)
 
 # Create the invaders
-number_of_invaders = 10
-for x in range (number_of_invaders):
-    invader = Invader(BLUE, 20, 20, 1) 
-    invader_group.add(invader)
-    all_sprites_group.add(invader)
-#Next x
+invader = Invader(20, 20, 1, 'invader_img.png') 
+new_invader_group(invader, 10, all_sprites_group, invader_group, 'invader_img.png')
 
 clock = pygame.time.Clock()
 last_keydown = 0
@@ -127,43 +153,48 @@ while not done and player.lives > 0:
         if event.type == pygame.QUIT:
             done = True
 
-        if event.type == pygame.KEYDOWN: # - a key is down
+        elif event.type == pygame.KEYDOWN: # - a key is down
             curr_time = pygame.time.get_ticks()
             if event.key == pygame.K_LEFT: # - if the left key pressed                
                 player.player_set_speed(-3) # speed set to -3
             if event.key == pygame.K_RIGHT: # - if the right key pressed
                 player.player_set_speed(3) # speed set to 3
-
-            if curr_time - last_keydown > 100: # limit frequency of shooting
-                if event.key == pygame.K_UP:
-                    if player.bullet_count > 0:
-                        bullet = Bullet(RED, 5, 5)
-                        all_sprites_group.add(bullet)
-                        bullet_group.add(bullet)
-                        player.decrease_bullets()
-                        last_keydown = curr_time
-                        
+            if event.key == pygame.K_UP and player.bullet_count > 0:
+                    bullet = Bullet(RED, 5, 5)
+                    all_sprites_group.add(bullet)
+                    bullet_group.add(bullet)
+                    player.decrease_bullets()
+                    
         elif event.type == pygame.KEYUP:
-            player.player_set_speed(0) # speed set to 0
+            if event.key == pygame.K_RIGHT or event.key == pygame.K_LEFT:
+                player.player_set_speed(0) # speed set to 0
 
+    # collisions between player and invaders
     player_hit_group = pygame.sprite.spritecollide(player, invader_group, True)
     for p in player_hit_group:
         player.lives -= 1
         
-    for b in bullet_group:         
+    if len(bullet_group) > 0:
+        # collisions between barriers and bullets
+        barrier_hit_group = pygame.sprite.groupcollide(barrier_group, bullet_group, False, True)
+        
+    for b in bullet_group:
+        # collisions between invaders and bullets
         invader_hit_group = pygame.sprite.spritecollide(b, invader_group, True)
+        if len(invader_group) == 0:
+            new_invader_group(invader, 10, all_sprites_group, invader_group, 'invader_img_2.png')
+        #decrease score if there's a collision
         for b in invader_hit_group:
             player.increase_score(5)
 
-    if player.lives == 4:
-        print_text(250, 150, screen, "Game Over")
     # -- Game logic goes in here
     all_sprites_group.update()
     # -- Screen background is BLACK
     screen.fill(BLACK)
     # -- Drawing code goes here
     all_sprites_group.draw(screen)
-
+    
+    #invader_hit_group_2 = pygame.sprite.spritecollide(barrier, bullet_group, True)
     print_text(20, 20, screen, "Lives: %d" % player.lives)
     print_text(20, 50, screen, "Score: %d" % player.score)
     print_text(20, 80, screen, "Bullets: %d" % player.bullet_count)
