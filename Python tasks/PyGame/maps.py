@@ -9,6 +9,16 @@ my_map = [[1,1,1,1,1,1,1,1,1,1],
     [1,0,1,1,1,0,1,0,0,1],
     [1,0,1,1,1,0,1,0,0,1],
     [1,0,0,0,0,0,0,0,0,1],
+    [1,1,1,1,1,1,1,1,0,1],
+    [1,1,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,1],
+    [1,1,0,1,1,1,1,1,0,1],
+    [1,0,0,0,0,0,1,0,0,1],
+    [1,0,1,1,1,0,1,0,0,1],
+    [1,0,1,1,1,0,1,0,0,1],
+    [1,0,1,1,1,0,1,0,0,1],
+    [1,0,0,0,0,0,0,0,0,1],
     [1,1,1,1,1,1,1,1,1,1]]
 
 # -- Initialise PyGame
@@ -76,6 +86,28 @@ class Player(pygame.sprite.Sprite):
     #end procedure
 #end class
 
+class Enemy(pygame.sprite.Sprite):
+    # Define the constructor for the player
+    def __init__(self, x_ref, y_ref):
+        # Call the sprite constructor
+        super().__init__()
+        # Create the sprite
+        width = 10
+        height = 10
+        color = YELLOW
+        self.image = pygame.Surface([width, height])
+        self.image.fill(color)
+        self.rect = self.image.get_rect()
+        # Set the position of the player attributes
+        self.rect.x = x_ref
+        self.rect.y = y_ref
+    #end procedure
+
+    def enemy_update_speed(self, x_val, y_val):
+        self.rect.x += x_val
+        self.rect.y += y_val
+
+
 
 # Create a list of all sprites
 all_sprites_group = pygame.sprite.Group()
@@ -83,26 +115,31 @@ all_sprites_group = pygame.sprite.Group()
 # Create a list of tiles for the walls
 wall_group = pygame.sprite.Group()
 
+# create enemy
+enemy = Enemy(20, 20)
+all_sprites_group.add(enemy)
+
 # Create walls on the screen (each tile is 20 x 20 so alter cords)
-for y in range(10):
+for y in range(20):
     for x in range(10):
-        if my_map[x][y] == 1:
+        if my_map[y][x] == 1:
             my_wall = Tile(BLUE, 20,20, x*20, y*20)
             wall_group.add(my_wall)
             all_sprites_group.add(my_wall)
         #end if
     #next x
 #next y
-pacman = Player(20, 20)
+
+#create enemy
+pacman = Player(40, 40)
 all_sprites_group.add(pacman)
+
 # Game loop
 while not(done):
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
 
-    pacman_old_x = pacman.rect.x
-    pacman_old_y = pacman.rect.y
     # -- Check for collisions between pacman and wall tiles
     player_hit_list = pygame.sprite.spritecollide(pacman, wall_group, False)
     for p in player_hit_list:
@@ -110,6 +147,8 @@ while not(done):
         pacman.rect.x = pacman_old_x
         pacman.rect.y = pacman_old_y
         #Run the update function for all sprites
+    pacman_old_x = pacman.rect.x
+    pacman_old_y = pacman.rect.y
     #next p
 
     
@@ -124,6 +163,9 @@ while not(done):
     elif keys[pygame.K_DOWN]:
         pacman.player_update_speed(0, 1)
     #end if
+
+    if enemy.rect.x < pacman.rect.x:
+        enemy.enemy_update_speed(1, 0)
         
     all_sprites_group.update()
     # Clear the screen

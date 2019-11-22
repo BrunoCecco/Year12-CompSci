@@ -117,7 +117,8 @@ def new_invader_group(invader, num_invaders, sprite_group, invader_group, invade
         invader = Invader(20, 20, 1, invader_image)      
         invader_group.add(invader)
         sprite_group.add(invader)
-    #Next x
+    #Next x
+
 
     
 all_sprites_group = pygame.sprite.Group()
