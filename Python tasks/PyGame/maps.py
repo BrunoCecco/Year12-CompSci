@@ -207,8 +207,12 @@ while not(done):
             enemy.enemy_update_speed(0, -1)
 
 
-    player_enemy_collision = pygame.sprite.spritecollideany(enemy, pacman, True)
-    
+    player_enemy_collision = pygame.sprite.collide_rect(enemy, pacman)
+
+    if player_enemy_collision:
+        pacman.remove()
+
+        
     all_sprites_group.update()
     screen.fill(BLACK)
     all_sprites_group.draw(screen)
