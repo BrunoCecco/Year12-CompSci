@@ -1,5 +1,6 @@
 import pygame
-'''
+
+
 my_map = [[1,1,1,1,1,1,1,1,1,1],
     [1,0,0,0,0,0,0,0,0,1],
     [1,0,0,0,0,0,0,0,0,1],
@@ -42,7 +43,7 @@ my_map = [[1,1,1,1,1,1,1,1,1,1],
           [1,0,0,0,0,0,0,0,0,1],
           [1,0,0,0,0,0,0,0,0,1],
           [1,1,1,1,1,1,1,1,1,1]]        
-
+'''
 
 
 # -- Initialise PyGame
@@ -140,7 +141,7 @@ all_sprites_group = pygame.sprite.Group()
 wall_group = pygame.sprite.Group()
 
 # create enemy
-enemy = Enemy(100, 100)
+enemy = Enemy(150, 100)
 all_sprites_group.add(enemy)
 
 # Create walls on the screen (each tile is 20 x 20 so alter cords)
@@ -167,7 +168,7 @@ while not(done):
     # -- Check for collisions between pacman and wall tiles
     player_hit_list = pygame.sprite.spritecollide(pacman, wall_group, False)
     for p in player_hit_list:
-        pacman.player_update_speed(0, 0)
+        pacman.player_update_speed(-1, -1)
         pacman.rect.x = pacman_old_x
         pacman.rect.y = pacman_old_y
         #Run the update function for all sprites
@@ -210,7 +211,7 @@ while not(done):
     player_enemy_collision = pygame.sprite.collide_rect(enemy, pacman)
 
     if player_enemy_collision:
-        pacman.remove()
+        all_sprites_group.remove(pacman)
 
         
     all_sprites_group.update()
