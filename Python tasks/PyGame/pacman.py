@@ -21,6 +21,7 @@ my_map = [[1,1,1,1,1,1,1,1,1,1],
     [1,0,1,1,1,0,1,0,0,1],
     [1,0,0,0,0,0,0,0,0,1],
     [1,1,1,1,1,1,1,1,1,1]]
+
 '''
 
 my_map = [[1,1,1,1,1,1,1,1,1,1],
@@ -198,20 +199,22 @@ while not(done):
 
 
     if enemy.rect.x != pacman.rect.x or enemy.rect.y != pacman.rect.y:
-        if enemy.rect.x < pacman.rect.x:
-            enemy.enemy_update_speed(1, 0)
-        elif enemy.rect.x > pacman.rect.x:
-            enemy.enemy_update_speed(-1, 0)
-        if enemy.rect.y < pacman.rect.y:
-            enemy.enemy_update_speed(0, 1)
-        elif enemy.rect.y > pacman.rect.y:
-            enemy.enemy_update_speed(0, -1)
+        if (pacman.rect.x-10) or (pacman.rect.x+10) not in my_wall.rect.x:                
+            if enemy.rect.x < pacman.rect.x:
+                enemy.enemy_update_speed(1, 0)
+            elif enemy.rect.x > pacman.rect.x:
+                enemy.enemy_update_speed(-1, 0)
+        if (pacman.rect.y)-10 or (pacman.rect.y)+10 not in my_wall.rect.x:
+            if enemy.rect.y < pacman.rect.y:
+                enemy.enemy_update_speed(0, 1)
+            elif enemy.rect.y > pacman.rect.y:
+                enemy.enemy_update_speed(0, -1)
 
 
     player_enemy_collision = pygame.sprite.collide_rect(enemy, pacman)
 
     if player_enemy_collision:
-        all_sprites_group.remove(pacman)
+        pacman.player_update_speed(0, 0)
 
         
     all_sprites_group.update()

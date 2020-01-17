@@ -113,7 +113,8 @@ class Barrier(pygame.sprite.Sprite):
 
 
 def new_invader_group(invader, num_invaders, sprite_group, invader_group, invader_image):
-    for x in range (num_invaders):
+    
+    for n in range (num_invaders):
         invader = Invader(20, 20, 1, invader_image)      
         invader_group.add(invader)
         sprite_group.add(invader)
