@@ -1,0 +1,1 @@
+{"success":true,"key":"FfdsuH","link":"https://file.io/FfdsuH","expiry":"14 days"}

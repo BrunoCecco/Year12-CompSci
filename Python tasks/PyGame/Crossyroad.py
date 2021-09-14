@@ -1,6 +1,7 @@
 import pygame
 import math
 import random
+import turtle
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -121,7 +122,7 @@ clock = pygame.time.Clock()
 
 while not done and player.lives > 0:
 #-user input and controls
-    
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True

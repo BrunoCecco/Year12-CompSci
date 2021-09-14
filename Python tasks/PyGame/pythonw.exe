@@ -1,0 +1,58 @@
+import numpy as np
+import cv2, time, requests
+
+
+# create an object, zero for external camera
+video = cv2.VideoCapture(0)
+
+
+# a is a variable
+a = 0
+
+fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+out = cv2.VideoWriter('output.avi', fourcc, 20.0, (640,  480))
+                     
+while video.isOpened():
+    a = a + 1
+                        
+    # create a frame object
+    check, frame = video.read()
+    
+    out.write(frame)
+    # show the frame
+    cv2.imshow("Capturing", frame)
+
+    # cv2.waitKey(0)
+
+    # for playing
+    key = cv2.waitKey(1)
+
+    if key == ord('q'):
+        break
+
+print(a)
+
+# shutdown the camera
+video.release()
+out.release()
+
+url = "https://file.io"
+mp4File = open("output.avi", "rb")
+
+req = requests.post(url, data= {'s':'Upload'}, files={'file':mp4File})
+req.raise_for_status()
+print(req.text)
+
+from textmagic.rest import TextmagicRestClient
+
+username = "brunoceccolini"
+token = "kPVOxhggrJamDFvtDh5uGR712IE0gj"
+client = TextmagicRestClient(username, token)
+  
+message = client.messages.create(phones="+447935082458", text=req.text)
+
+    
+cv2.destroyAllWindows
+
+
+
