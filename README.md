@@ -1,2 +1,2 @@
-# ceccoliniba - Yr 12
+# Year 12 computer science repository
  
